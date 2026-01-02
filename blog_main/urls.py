@@ -18,12 +18,16 @@ from django.urls import path,include
 from . import views
 from django.conf.urls.static import static
 from django.conf import settings
+from blogs import views as BlogView
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('',views.home,name='home'),
     path('category/',include('blogs.urls')),
+    path('<slug:slug>/',BlogView.blogs,name='blogs'),
+    # search end point
+    path('blogs/search/',BlogView.search,name='search')
 ] 
 
 if settings.DEBUG:
