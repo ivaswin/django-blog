@@ -4,6 +4,8 @@ from django.contrib.auth.decorators import login_required
 from .forms import CategoryForm,BlogForm,AddUserForm,EditUserForm
 from django.template.defaultfilters import slugify
 from django.contrib.auth.models import User
+from django.contrib.auth.decorators import permission_required
+from django.core.exceptions import PermissionDenied
 # Create your views here.
 @login_required(login_url ='login')
 def dashboard(request):
@@ -104,6 +106,7 @@ def delete_post(request,pk):
     post.delete()
     return redirect('posts')
 
+@permission_required('auth.view_user',raise_exception=True)
 def users(request):
     users = User.objects.all()
     context ={
@@ -111,6 +114,7 @@ def users(request):
     }
     return render(request,'dashboard/users.html',context)
 
+@permission_required('auth.add_user',raise_exception=True)
 def add_users(request):
     if request.method =='POST':
         form =AddUserForm(request.POST)
@@ -125,6 +129,7 @@ def add_users(request):
     }
     return render(request,'dashboard/add_users.html',context)
 
+@permission_required('auth.change_user',raise_exception=True)
 def edit_user(request,pk):
     user = get_object_or_404(User,pk=pk)
     if request.method == 'POST':
@@ -142,6 +147,7 @@ def edit_user(request,pk):
     }
     return render(request,'dashboard/edit_user.html',context)
 
+@permission_required('auth.delete_user',raise_exception=True)
 def delete_user(request,pk):
     user = get_object_or_404(User,pk=pk)
     user.delete()
